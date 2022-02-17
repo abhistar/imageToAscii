@@ -7,3 +7,6 @@ Create ascii art from any image using canny-edge detection
 Will be converted into
 
 ![Processd image](https://github.com/abhistar/imageToAscii/blob/main/image-ascii.png?raw=true)
+
+Another example
+![Processec image 2](https://github.com/abhistar/imageToAscii/blob/main/image-ascii2.png?raw=true)

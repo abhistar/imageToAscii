@@ -14,11 +14,11 @@ plt.title('Edge Image'), plt.xticks([]), plt.yticks([])
 plt.show()
 
 
-vertical = np.array([[0,1,0],[0,1,0],[0,1,0]])
-hor = np.array([[0,0,0],[1,1,1],[0,0,0]])
-for_slash = np.array([[0,0,1],[0,1,0],[1,0,0]])
-back_slash = np.array([[1,0,0],[0,1,0],[0,0,1]])
-point = np.array([[0,0,0],[0,1,0],[0,0,0]])
+vertical = np.array([[[1,0,0],[1,0,0],[1,0,0]], [[0,1,0],[0,1,0],[0,1,0]], [[0,0,1],[0,0,1],[0,0,1]]])
+hor = np.array([[[1,1,1],[0,0,0],[0,0,0]], [[0,0,0],[1,1,1],[0,0,0]], [[0,0,0],[0,0,0],[1,1,1]]])
+for_slash = np.array([[[0,1,0],[1,0,0],[0,0,0]], [[0,0,1],[0,1,0],[1,0,0]], [[0,0,0],[0,0,1],[0,1,0]]])
+back_slash = np.array([[[0,1,0],[0,0,1],[0,0,0]], [[1,0,0],[0,1,0],[0,0,1]], [[0,0,0],[1,0,0],[0,1,0]]])
+point = np.array([[[0,0,0],[0,1,0],[0,0,0]],[[0,0,0],[0,1,0],[0,0,0]],[[0,0,0],[0,1,0],[0,0,0]]])
 
 kernel_list = np.array([vertical, hor, for_slash, back_slash, point])
 char_list = ["|", "-", "/", "\\", ".", " "]
@@ -38,7 +38,8 @@ def convolve_and_place_char(img: np.array, kernel_list: np.array) -> list:
                 max_val = 0
                 max_ind = 5
                 for x in range(kernel_list.shape[0]):
-                    conv_val = np.sum(np.multiply(mat, kernel_list[x]))
+                    for y in range(3):
+                        conv_val = np.sum(np.multiply(mat, kernel_list[x,y]))
                     if(conv_val>max_val):
                         max_val = conv_val
                         max_ind = x

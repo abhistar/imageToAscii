@@ -3,25 +3,31 @@ import numpy as np
 from PIL import Image
 from matplotlib import pyplot as plt
 import sys
+import turtle
 
-img = cv.imread('image.jpeg',0)
-img = cv.resize(img, (300, 300))
-edges = cv.Canny(img,100,300)
-plt.subplot(121),plt.imshow(img,cmap = 'gray')
-plt.title('Original Image'), plt.xticks([]), plt.yticks([])
-plt.subplot(122),plt.imshow(edges,cmap = 'gray')
-plt.title('Edge Image'), plt.xticks([]), plt.yticks([])
-plt.show()
+IMAGE_LOC = "image.jpeg"
+IMG_SIZE = 400
+CANNY_PARA_1 = 100
+CANNY_PARA_2 = 300
+FONT_SIZE = 8
+SCREEN_BG = "black"
+PEN_COLOR = "white"
+FONT = "Courier"
+FONT_STYLE = "normal"
 
+img = cv.imread(IMAGE_LOC,0)
+img = cv.resize(img, (IMG_SIZE, IMG_SIZE))
+edges = cv.Canny(img, CANNY_PARA_1, CANNY_PARA_2)
 
 vertical = np.array([[[1,0,0],[1,0,0],[1,0,0]], [[0,1,0],[0,1,0],[0,1,0]], [[0,0,1],[0,0,1],[0,0,1]]])
 hor = np.array([[[1,1,1],[0,0,0],[0,0,0]], [[0,0,0],[1,1,1],[0,0,0]], [[0,0,0],[0,0,0],[1,1,1]]])
 for_slash = np.array([[[0,1,0],[1,0,0],[0,0,0]], [[0,0,1],[0,1,0],[1,0,0]], [[0,0,0],[0,0,1],[0,1,0]]])
 back_slash = np.array([[[0,1,0],[0,0,1],[0,0,0]], [[1,0,0],[0,1,0],[0,0,1]], [[0,0,0],[1,0,0],[0,1,0]]])
-point = np.array([[[0,0,0],[0,1,0],[0,0,0]],[[0,0,0],[0,1,0],[0,0,0]],[[0,0,0],[0,1,0],[0,0,0]]])
+plus = np.array([[[1,1,1],[1,0,0],[1,0,0]],[[0,1,0],[1,1,1],[0,1,0]],[[0,0,1],[0,0,1],[1,1,1]]])
+cross = np.array([[[1,1,0],[1,1,0],[0,0,1]],[[1,0,1],[0,1,0],[1,0,1]],[[1,0,0],[0,1,1],[0,1,1]]])
 
-kernel_list = np.array([vertical, hor, for_slash, back_slash, point])
-char_list = ["|", "-", "/", "\\", ".", " "]
+kernel_list = np.array([vertical, hor, for_slash, back_slash, plus, cross])
+char_list = ["|", "-", "/", "\\", "+", "x", " "]
 
 def convolve_and_place_char(img: np.array, kernel_list: np.array) -> list:
     k = kernel_list[0].shape[0]
@@ -36,7 +42,7 @@ def convolve_and_place_char(img: np.array, kernel_list: np.array) -> list:
                 mat = img[i:i+k, j:j+k]
 
                 max_val = 0
-                max_ind = 5
+                max_ind = len(char_list)-1
                 for x in range(kernel_list.shape[0]):
                     for y in range(3):
                         conv_val = np.sum(np.multiply(mat, kernel_list[x,y]))
@@ -53,9 +59,29 @@ def convolve_and_place_char(img: np.array, kernel_list: np.array) -> list:
 
 conv_chars = convolve_and_place_char(edges, kernel_list)
 
-sys.stdout = open(r"output.txt", "w+")
-for x in conv_chars:
-    # file1.write(''.join(x))
-    print(''.join(x))
+method = sys.argv[1]
 
-sys.stdout.close()
+if method=="turtle":
+    turtle.Screen().bgcolor("black")
+    turtle.pencolor("white")
+    turtle.penup()
+    turtle.setpos((-400,530))
+    turtle.speed(1)
+    for x in conv_chars:
+        line = ''.join(x)
+        turtle.pendown()
+        turtle.write(line, font=(FONT, FONT_SIZE, FONT_STYLE))
+        turtle.penup()
+        turtle.goto(-400, turtle.ycor() - FONT_SIZE)
+    turtle.done()
+    
+elif method=="text":
+    plt.subplot(121),plt.imshow(img,cmap = 'gray')
+    plt.title('Original Image'), plt.xticks([]), plt.yticks([])
+    plt.subplot(122),plt.imshow(edges,cmap = 'gray')
+    plt.title('Edge Image'), plt.xticks([]), plt.yticks([])
+    plt.show()
+    sys.stdout = open("output.txt", "w+")
+    for x in conv_chars:
+        print(''.join(x))
+    sys.stdout.close()

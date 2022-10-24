@@ -5,8 +5,8 @@ from matplotlib import pyplot as plt
 import sys
 import turtle
 
-IMAGE_LOC = "image.jpeg"
-IMG_SIZE = 400
+IMAGE_LOC = "diya.jpeg"
+IMG_SIZE = 350
 CANNY_PARA_1 = 100
 CANNY_PARA_2 = 300
 FONT_SIZE = 8
@@ -62,17 +62,18 @@ conv_chars = convolve_and_place_char(edges, kernel_list)
 method = sys.argv[1]
 
 if method=="turtle":
+    turtle.Screen().setup(width = 1.0, height = 1.0)
     turtle.Screen().bgcolor("black")
     turtle.pencolor("white")
     turtle.penup()
-    turtle.setpos((-400,530))
+    turtle.setpos((-1*IMG_SIZE,int(1.325*IMG_SIZE)))
     turtle.speed(1)
     for x in conv_chars:
         line = ''.join(x)
         turtle.pendown()
         turtle.write(line, font=(FONT, FONT_SIZE, FONT_STYLE))
         turtle.penup()
-        turtle.goto(-400, turtle.ycor() - FONT_SIZE)
+        turtle.goto(-1*IMG_SIZE, turtle.ycor() - FONT_SIZE)
     turtle.done()
     
 elif method=="text":
